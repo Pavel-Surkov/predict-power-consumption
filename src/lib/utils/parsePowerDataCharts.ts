@@ -1,38 +1,39 @@
-import datab64 from "../shared/data.numbers?b64";
+import datab64 from "$lib/shared/data.numbers?b64";
 import z from "zod";
 import parseExcelData from "./parseExcelData";
-
-const tableRowSchema = z.object({
-  Time: z.string(),
-  Consumption: z.number(),
-});
-
-const excelDataSchema = z.array(tableRowSchema);
+import { excelDataSchema } from "./parsePowerData";
 
 type ConvertedTensors = {
+  formatedDates: number[];
+  consumption: number[];
   inputTensor: number[][];
-  outputTensor: number[];
 };
 
 async function convertDataToTensors(data: z.infer<typeof excelDataSchema>) {
   return data.reduce(
     (acc: ConvertedTensors, row) => {
       const [datePart, timePart] = row.Time.split(" ");
-      const [day, month] = datePart.split(".");
+      const [day, month, year] = datePart.split(".");
 
       // Do not count minutes & seconds because it's always equal to 00
-      const [hours] = timePart.split(":");
+      const [hours, minutes, seconds] = timePart.split(":");
 
       return {
+        formatedDates: [
+          ...acc.formatedDates,
+          new Date(
+            `20${year}-${month}-${day}T${hours}:${minutes}:${seconds}`,
+          ).getTime(),
+        ],
+        consumption: [...acc.consumption, row.Consumption],
         inputTensor: [...acc.inputTensor, [+month, +day, +hours]],
-        outputTensor: [...acc.outputTensor, row.Consumption],
       };
     },
-    { inputTensor: [], outputTensor: [] },
+    { formatedDates: [], consumption: [], inputTensor: [] },
   );
 }
 
-export default async function parsePowerData() {
+export default async function parsePowerDataCharts() {
   const data = await parseExcelData(datab64, excelDataSchema).catch(
     console.error,
   );

@@ -1,4 +1,4 @@
-import weatherb64 from "../shared/nsk-weather-2021.numbers?b64";
+import weatherb64 from "$lib/shared/nsk-weather-2021.numbers?b64";
 import z from "zod";
 import parseExcelData from "./parseExcelData";
 

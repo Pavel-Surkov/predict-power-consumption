@@ -1,7 +1,7 @@
 <script lang="ts">
     import svelteLogo from "$lib/assets/svelte.svg";
     import viteLogo from "$lib/assets/vite.svg";
-    import Tensor from "$lib/Tensor.svelte";
+    import Tensor from "$lib/components/Tensor.svelte";
 </script>
 
 <main class="main">
@@ -13,7 +13,7 @@
             <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
         </a>
     </div>
-    <div>
+    <div class="tensorBlock">
         <Tensor />
     </div>
 </main>
@@ -38,5 +38,8 @@
     }
     .logo.svelte:hover {
         filter: drop-shadow(0 0 2em #ff3e00aa);
+    }
+    .tensorBlock {
+        margin-bottom: 20px;
     }
 </style>

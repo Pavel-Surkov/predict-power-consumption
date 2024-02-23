@@ -2,11 +2,11 @@
 <!-- Practise (IMPORTANT): https://www.youtube.com/watch?v=mSVfhb1wFqk -->
 <script lang="ts">
     import * as tf from "@tensorflow/tfjs";
-    import parsePowerData from "../utils/parsePowerData";
-    import trainModel from "../utils/trainModel";
+    import parsePowerData from "$lib/utils/parsePowerData";
+    import trainModel from "$lib/utils/trainModel";
     import { onMount, onDestroy } from "svelte";
     import { DateInput } from "date-picker-svelte";
-    import normalizeTensor from "../utils/normalizeTensor";
+    import normalizeTensor from "$lib/utils/normalizeTensor";
 
     const LOAD_TRAINED_MODEL = true;
     let loading = true;
@@ -97,6 +97,7 @@
         <button type="button" class="predictBtn" on:click={predict}
             >Predict</button
         >
+        <a href="/charts">Open charts page</a>
     </div>
 {:else}
     <div>
@@ -130,5 +131,6 @@
         border-radius: 999px;
         text-align: center;
         background: #646cff;
+        margin-bottom: 28px;
     }
 </style>
