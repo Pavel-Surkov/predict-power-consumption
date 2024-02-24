@@ -5,17 +5,15 @@
     import parsePowerDataCharts from "$lib/utils/parsePowerDataCharts";
     import Chart from "$lib/components/Chart.svelte";
 
-    let factConsumption: number[] = [];
-    let predictedConsumtion: number[] = [];
+    let predictedConsumption: number[] = [];
+    let data: Awaited<ReturnType<typeof parsePowerDataCharts>>;
 
     onMount(async () => {
-        const data = await parsePowerDataCharts();
+        data = await parsePowerDataCharts();
 
         if (!data) {
             throw new Error("Failed to parse power consumption data");
         }
-
-        factConsumption = data.consumption;
 
         const trainedModel = (await tf.loadLayersModel(
             `localstorage://${import.meta.env.VITE_LOCALSTORAGE_NAME}`,
@@ -29,12 +27,20 @@
         const normalizedInput = normalizeTensor(tf.tensor2d(data.inputTensor));
 
         const output = trainedModel.predict(normalizedInput) as any;
-        output.print();
-        predictedConsumtion = Array.from(output.dataSync());
+        predictedConsumption = Array.from(output.dataSync());
     });
-
-    $: console.log(factConsumption, predictedConsumtion);
 </script>
 
-<h1>Charts page</h1>
-<Chart />
+<div class="pageWrapper">
+    <h1>Charts page</h1>
+    <Chart {data} {predictedConsumption} />
+</div>
+
+<style>
+    .pageWrapper {
+        display: flex;
+        gap: 24px;
+        flex-direction: column;
+        align-items: center;
+    }
+</style>

@@ -8,9 +8,9 @@
     import { DateInput } from "date-picker-svelte";
     import normalizeTensor from "$lib/utils/normalizeTensor";
 
-    const LOAD_TRAINED_MODEL = true;
+    const LOAD_TRAINED_MODEL = false;
     let loading = true;
-    const epochs = 10;
+    const epochs = 1000;
 
     let excelData: Awaited<ReturnType<typeof parsePowerData>> | null;
     let INPUT_TENSOR: tf.Tensor2D;

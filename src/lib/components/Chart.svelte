@@ -1,29 +1,59 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import parsePowerDataCharts from "$lib/utils/parsePowerDataCharts";
 
-    let chart: any;
+    export let predictedConsumption: number[];
+    export let data: Awaited<ReturnType<typeof parsePowerDataCharts>>;
+
+    let chart: any; // svelte-apexcharts does not provide type annotations
 
     onMount(async () => {
         chart = (await import("svelte-apexcharts")).chart;
     });
 
     // TODO: provide correct data via props
-    let options = {
-        chart: {
-            type: "bar",
-        },
-        series: [
-            {
-                name: "sales",
-                data: [30, 40, 35, 50, 49, 60, 70, 91, 125],
-            },
-        ],
-        xaxis: {
-            categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
-        },
-    };
+    $: options =
+        data && predictedConsumption
+            ? {
+                  chart: {
+                      type: "line",
+                      height: 700,
+                      width: 1500,
+                  },
+                  series: [
+                      {
+                          name: "real data",
+                          data: data.consumption.slice(0, -1),
+                      },
+                      {
+                          name: "predicted data",
+                          data: predictedConsumption.slice(0, -1),
+                      },
+                  ],
+                  yaxis: {
+                      labels: {
+                          formatter: function (val: number) {
+                              return val.toFixed(2);
+                          },
+                      },
+                  },
+                  xaxis: {
+                      type: "datetime",
+                      categories: data.formatedDates,
+                  },
+              }
+            : {};
 </script>
 
 {#if chart}
-    <div use:chart={options} />
+    <div class="chartWrapper">
+        <div use:chart={options} />
+    </div>
 {/if}
+
+<style>
+    .chartWrapper {
+        max-width: calc(100vw - 40px);
+        overflow: scroll;
+    }
+</style>

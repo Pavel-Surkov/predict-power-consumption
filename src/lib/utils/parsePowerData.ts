@@ -1,4 +1,4 @@
-import datab64 from "$lib/shared/data.numbers?b64";
+import datab64 from "$lib/shared/data_nov_dec.numbers?b64";
 import z from "zod";
 import parseExcelData from "./parseExcelData";
 
